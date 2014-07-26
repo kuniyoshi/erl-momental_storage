@@ -1,0 +1,11 @@
+{application,
+ momental_storage,
+ [{description, "A storage server with no copied local file."},
+  {vsn, "0.1"},
+  {modules, []},
+  {registered, [momental_storage_sup]},
+  {applications, [kernel,
+                  stdlib,
+                  cowboy]},
+  {mod, {momental_storage_app, []}},
+  {env, []}]}.
