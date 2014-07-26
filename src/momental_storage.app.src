@@ -8,4 +8,5 @@
                   stdlib,
                   cowboy]},
   {mod, {momental_storage_app, []}},
-  {env, []}]}.
+  {env, [{hostname, <<"localhost">>},
+         {port, 8080}]}]}.
