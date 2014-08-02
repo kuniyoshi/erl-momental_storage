@@ -33,6 +33,12 @@ that may `POST` from a *S*ender.
 The name after `/r/` will be ignored, but is used to notify client
 program to the filename.
 
+/d/
+---
+
+*D*ata path.
+
+
 /s/
 ---
 

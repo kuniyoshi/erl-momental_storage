@@ -6,7 +6,8 @@
   {registered, [momental_storage_sup]},
   {applications, [kernel,
                   stdlib,
-                  cowboy]},
+                  cowboy,
+                  mnesia]},
   {mod, {momental_storage_app, []}},
   {env, [{hostname, <<"localhost">>},
          {port, 8080}]}]}.

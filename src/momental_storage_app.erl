@@ -5,11 +5,14 @@
 
 start(_Type, _Args) ->
     Dispatch = cowboy_router:compile([{momental_storage_config:hostname(),
-                                       [{"/r/", r_handler, []}]}]),
+                                       [{"/r/[:filename]", r_handler, []},
+                                        {"/d/[:filename]", d_handler, []},
+                                        {"/s/[:filename]", s_handler, []}]}]),
     {ok, _} = cowboy:start_http(http,
                                 100,
                                 [{port, momental_storage_config:port()}],
                                 [{env, [{dispatch, Dispatch}]}]),
+    ok = momental_storage_session:setup(),
     momental_storage_sup:start_link().
 
 stop(_State) ->
