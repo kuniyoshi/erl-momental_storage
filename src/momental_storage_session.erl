@@ -2,7 +2,7 @@
 -export([setup/0]).
 -export([get_id/1, get_started_at/1, get_state/1]).
 -export([can_receive/1, can_send/1]).
--export([gen_id/0, new/1, write/1, read/1]).
+-export([gen_id/0, new/1, write/1, read/1, delete/1]).
 -export([bridge/3, build_sender_fun/1, close_receiver/1]).
 -record(session, {id = <<>> :: binary(),
                   started_at = 0 :: calendar:datetime(),
@@ -54,6 +54,9 @@ read(Id) ->
     [Session] = mnesia:dirty_read(session, Id),
     Session.
 
+delete(Session) ->
+    mnesia:dirty_delete_object(Session).
+
 bridge_loop(Fun) ->
     receive
         {data, Data} ->
@@ -73,7 +76,6 @@ build_sender_fun(Session) ->
     SenderFun = fun(Data) ->
             ?debugVal(Data),
             Receiver ! {data, Data},
-            timer:sleep(2000),
             {ok, Data}
     end,
     SenderFun.

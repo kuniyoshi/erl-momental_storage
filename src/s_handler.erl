@@ -17,6 +17,7 @@ bridge_to_get(Req, Session) ->
                                                {read_length, 10},
                                                {read_timeout, 60000}]),
     momental_storage_session:close_receiver(Session),
+    momental_storage_session:delete(Session),
     cowboy_req:reply(200,
                      [],
                      ["200 ok\n"],
