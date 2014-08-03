@@ -28,19 +28,28 @@ forbidden_invalid_state(Req, Session, true) ->
 forbidden_invalid_state(Req, _Session, false) ->
     cowboy_req:reply(403, Req).
 
-reject_except_post(<<"PUT">>, Req) ->
+reject_huge_body(undefined, _Limitation, Req) ->
+    cowboy_req:reply(411, Req);
+reject_huge_body(Size, Limitation, Req) when Size > Limitation ->
+    cowboy_req:reply(413, Req);
+reject_huge_body(_Size, _Limitation, Req) ->
     {Id, Req2} = cowboy_req:binding(filename, Req),
     ?debugVal(Id),
     Session = momental_storage_session:read(Id),
     ?debugVal(Session),
     CanSend = momental_storage_session:can_send(Session),
-    forbidden_invalid_state(Req2, Session, CanSend);
-reject_except_post(_, Req) ->
+    forbidden_invalid_state(Req2, Session, CanSend).
+
+reject_except_put(<<"PUT">>, Req) ->
+    {Length, Req2} = cowboy_req:body_length(Req),
+    Limitation = momental_storage_config:max_transfer_size(),
+    reject_huge_body(Length, Limitation, Req2);
+reject_except_put(_, Req) ->
     cowboy_req:reply(405, Req).
 
 handle(Req, State) ->
     {Method, Req2} = cowboy_req:method(Req),
-    {ok, Req3} = reject_except_post(Method, Req2),
+    {ok, Req3} = reject_except_put(Method, Req2), % TODO: How long way to bridge_to_get?  Should be shorten.
     {ok, Req3, State}.
 
 terminate(_Reason, _Req, _State) ->
