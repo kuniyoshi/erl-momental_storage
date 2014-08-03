@@ -2,7 +2,6 @@
 -export([init/3]).
 -export([handle/2]).
 -export([terminate/3]).
--include_lib("eunit/include/eunit.hrl").
 
 init(_Transport, Req, []) ->
     {ok, Req, undefined}.
@@ -12,21 +11,19 @@ bridge_from_put(Req, Session) ->
     BridgeFun = fun(Data) ->
             ok = cowboy_req:chunk(Data, Req2)
     end,
-    momental_storage_session:bridge(Session, out, BridgeFun),
+    momental_storage_session:bridge(Session, BridgeFun),
     {ok, Req2}.
 
-forbidden_invalid_state(Req, Session, true) ->
+forbidden_invalid_state(true, Req, Session) ->
     bridge_from_put(Req, Session);
-forbidden_invalid_state(Req, _Session, false) ->
+forbidden_invalid_state(false, Req, _Session) ->
     cowboy_req:reply(403, Req).
 
 reject_except_get(<<"GET">>, Req) ->
-    {Id, Req2} = cowboy_req:binding(filename, Req),
-    ?debugVal(Id),
+    {Id, Req2} = cowboy_req:binding(id, Req),
     Session = momental_storage_session:read(Id),
-    ?debugVal(Session),
     CanReceive = momental_storage_session:can_receive(Session),
-    forbidden_invalid_state(Req2, Session, CanReceive);
+    forbidden_invalid_state(CanReceive, Req2, Session);
 reject_except_get(_, Req) ->
     cowboy_req:reply(405, Req).
 

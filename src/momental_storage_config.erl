@@ -5,15 +5,15 @@
          fixed_chunk_size/0,
          timeout_ms/0]).
 
-from_application_env(Key) ->
+get_from_env(Key) ->
     {ok, Val} = application:get_env(momental_storage, Key),
     Val.
 
 hostname() ->
-    from_application_env(hostname).
+    get_from_env(hostname).
 
 port() ->
-    from_application_env(port).
+    get_from_env(port).
 
 max_transfer_size() ->
     500000000.

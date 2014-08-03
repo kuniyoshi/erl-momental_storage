@@ -2,16 +2,14 @@
 -export([init/3]).
 -export([handle/2]).
 -export([terminate/3]).
--include_lib("eunit/include/eunit.hrl").
 
 init(_Transport, Req, []) ->
     {ok, Req, undefined}.
 
 redirect_to_d_path(<<"GET">>, Req) ->
-    Id = momental_storage_session:gen_id(),
+    Session = momental_storage_session:new(),
+    Id = momental_storage_session:get_id(Session),
     Url = momental_storage_url:schemeful([<<"/d/">>, Id]),
-    Session = momental_storage_session:new([{id, Id},
-                                            {started_at, calendar:datetime_to_gregorian_seconds(erlang:localtime())}]),
     momental_storage_session:write(Session),
     cowboy_req:reply(302,
                      [{<<"location">>, Url}],
