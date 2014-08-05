@@ -8,6 +8,6 @@ hostful(Path) ->
 
 schemeful(Path) ->
     Hostful = hostful(Path),
-    Scheme = <<"http://">>,
+    Scheme = <<"https://">>,
     [Scheme, Hostful].
 
