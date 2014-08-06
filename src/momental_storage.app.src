@@ -12,4 +12,5 @@
                   runtime_tools]},
   {mod, {momental_storage_app, []}},
   {env, [{hostname, <<"localhost">>},
-         {port, 8080}]}]}.
+         {port, 8080},
+         {disable_https, false}]}]}.

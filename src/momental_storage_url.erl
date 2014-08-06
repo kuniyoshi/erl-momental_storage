@@ -8,6 +8,5 @@ hostful(Path) ->
 
 schemeful(Path) ->
     Hostful = hostful(Path),
-    Scheme = <<"https://">>,
+    Scheme = [momental_storage_config:protocol_scheme(), <<"://">>],
     [Scheme, Hostful].
-

@@ -71,15 +71,10 @@ Sender send `PUT` request to the URL which includes session ID.
 INSTALL
 =======
 
-Place SSL certificate file to `priv/ssl`, or change code to use http instad of https.
+Place SSL certificate file to `priv/ssl`, or change code to use HTTP instad of HTTPS.
 
-The code can change editing `src/momental_storage_app.erl`, and `src/momental_storage_url.erl`.
-
-- `src/momental_storage_app.erl`
-  - change from `https` to `http`
-  - delete ssl option of `cacertfile`, `certfile`, `keyfile`
-- `src/momental_storage_url.erl`
-  - change from `https` to `http`
+The code can change protocol scheme from HTTPS to HTTP editing the `src/momental_storage.app.src`.
+In the file, change `disable_https` from `false` to `true`, then the application work with HTTP.
 
 ``` bash
   $ make
