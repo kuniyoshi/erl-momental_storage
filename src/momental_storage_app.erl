@@ -5,18 +5,18 @@
 
 start_protocol_scheme(<<"https">>, Dispatch) ->
     PrivDir = code:priv_dir(momental_storage),
-    {ok, _} = cowboy:start_https(https,
-                                 100,
-                                 [{port, momental_storage_config:port()},
-                                  {cacertfile, PrivDir ++ "/ssl/server.crt"},
-                                  {certfile, PrivDir ++ "/ssl/server.crt"},
-                                  {keyfile, PrivDir ++ "/ssl/server.key"}],
-                                 [{env, [{dispatch, Dispatch}]}]);
+    {ok, _} = cowboy:start_tls(https,
+                               [{port, momental_storage_config:port()},
+                                {cacertfile, PrivDir ++ "/ssl/server.crt"},
+                                {certfile, PrivDir ++ "/ssl/server.crt"},
+                                {keyfile, PrivDir ++ "/ssl/server.key"}],
+                               #{env => #{dispatch => Dispatch}}),
+    ok;
 start_protocol_scheme(<<"http">>, Dispatch) ->
-    {ok, _} = cowboy:start_http(http,
-                                100,
-                                [{port, momental_storage_config:port()}],
-                                [{env, [{dispatch, Dispatch}]}]).
+    {ok, _} = cowboy:start_clear(http,
+                                 [{port, momental_storage_config:port()}],
+                                 #{env => #{dispatch => Dispatch}}),
+    ok.
 
 start(_Type, _Args) ->
     Dispatch = cowboy_router:compile([{momental_storage_config:hostname(),

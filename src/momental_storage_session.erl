@@ -28,7 +28,7 @@ can_receive(Session) -> get_state(Session) =:= init.
 can_send(Session) -> get_state(Session) =:= receiver_ready.
 
 gen_id() ->
-    Sha = crypto:hash(sha512, crypto:rand_bytes(64)),
+    Sha = crypto:hash(sha512, crypto:strong_rand_bytes(64)),
     Id = lists:map(fun(Bin) -> io_lib:format("~.16B", [Bin]) end, binary_to_list(Sha)),
     Id2 = list_to_binary(lists:flatten(Id)),
     Id2.
@@ -59,7 +59,7 @@ bridge_loop(Fun) ->
             Fun(Data),
             bridge_loop(Fun);
         done ->
-            ok
+            Fun(fin)
     end.
 
 to_be_ready(Session, ReceiverPid) ->
