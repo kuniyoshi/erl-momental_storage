@@ -1,7 +1,7 @@
 {application,
  momental_storage,
  [{description, "A storage server with no copied local file."},
-  {vsn, "0.1"},
+  {vsn, "0.2"},
   {modules, []},
   {registered, [momental_storage_sup]},
   {applications, [kernel,
