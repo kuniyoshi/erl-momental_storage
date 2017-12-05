@@ -3,7 +3,7 @@
 
 init(Req0, Opts) ->
     Method = cowboy_req:method(Req0),
-    {ok, reject_except_put(Method, Req0), Opts}.
+    {ok, reject_except_put_or_post(Method, Req0), Opts}.
 
 read_body({ok, Body, _Req}, BridgeFun, _Opts) ->
     BridgeFun(Body),
@@ -41,9 +41,13 @@ reject_huge_body(_Size, _Limitation, Req) ->
     CanSend = momental_storage_session:can_send(Session),
     forbidden_invalid_state(CanSend, Req, Session).
 
-reject_except_put(<<"PUT">>, Req) ->
+reject_except_put_or_post(<<"POST">>, Req) ->
     Length = cowboy_req:body_length(Req),
     Limitation = momental_storage_config:max_transfer_size(),
     reject_huge_body(Length, Limitation, Req);
-reject_except_put(_, Req) ->
+reject_except_put_or_post(<<"PUT">>, Req) ->
+    Length = cowboy_req:body_length(Req),
+    Limitation = momental_storage_config:max_transfer_size(),
+    reject_huge_body(Length, Limitation, Req);
+reject_except_put_or_post(_, Req) ->
     cowboy_req:reply(405, Req).
